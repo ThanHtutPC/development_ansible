@@ -1,0 +1,117 @@
+2024-12-12T15:15:31.252729+00:00 WARNING 'ansible_navigator.image_manager.puller._log_message' Image inspection failed, image assumed to be corrupted or missing
+2024-12-12T15:15:31.253317+00:00 WARNING 'ansible_navigator.image_manager.puller._log_message' stdout: []
+
+2024-12-12T15:15:31.253409+00:00 WARNING 'ansible_navigator.image_manager.puller._log_message' stderr: Error: error inspecting object: ghcr.io/ansible/community-ansible-dev-tools:latest: image not known
+
+2024-12-12T15:16:18.068303+00:00 WARNING 'ansible_navigator.image_manager.puller._log_message' Image inspection failed, image assumed to be corrupted or missing
+2024-12-12T15:16:18.068697+00:00 WARNING 'ansible_navigator.image_manager.puller._log_message' stdout: []
+
+2024-12-12T15:16:18.068744+00:00 WARNING 'ansible_navigator.image_manager.puller._log_message' stderr: Error: error inspecting object: registry.redhat.io/ansible-automation-platform-24/ee-supported-rhel8:latest: image not known
+
+2024-12-12T15:16:18.068814+00:00 ERROR 'ansible_navigator.image_manager.puller._log_message' Pull policy is set to 'never' and execution environment image was not found locally
+2024-12-12T15:16:21.716224+00:00 WARNING 'ansible_navigator.image_manager.puller._log_message' Image inspection failed, image assumed to be corrupted or missing
+2024-12-12T15:16:21.716647+00:00 WARNING 'ansible_navigator.image_manager.puller._log_message' stdout: []
+
+2024-12-12T15:16:21.716738+00:00 WARNING 'ansible_navigator.image_manager.puller._log_message' stderr: Error: error inspecting object: registry.redhat.io/ansible-automation-platform-24/ee-supported-rhel8:latest: image not known
+
+2024-12-12T15:16:24.598149+00:00 ERROR 'ansible_navigator.image_manager.puller._log_message' Execution environment pull failed
+2024-12-12T15:16:32.050743+00:00 WARNING 'ansible_navigator.image_manager.puller._log_message' Image inspection failed, image assumed to be corrupted or missing
+2024-12-12T15:16:32.051211+00:00 WARNING 'ansible_navigator.image_manager.puller._log_message' stdout: []
+
+2024-12-12T15:16:32.051261+00:00 WARNING 'ansible_navigator.image_manager.puller._log_message' stderr: Error: error inspecting object: registry.redhat.io/ansible-automation-platform-24/ee-supported-rhel8:latest: image not known
+
+2024-12-12T15:16:34.318093+00:00 ERROR 'ansible_navigator.image_manager.puller._log_message' Execution environment pull failed
+2024-12-12T15:17:25.148754+00:00 WARNING 'ansible_navigator.image_manager.puller._log_message' Image inspection failed, image assumed to be corrupted or missing
+2024-12-12T15:17:25.149131+00:00 WARNING 'ansible_navigator.image_manager.puller._log_message' stdout: []
+
+2024-12-12T15:17:25.149180+00:00 WARNING 'ansible_navigator.image_manager.puller._log_message' stderr: Error: error inspecting object: registry.redhat.io/ansible-automation-platform-24/ee-supported-rhel8:latest: image not known
+
+2024-12-12T15:18:56.766586+00:00 ERROR 'ansible_navigator.actions.images._parse' Unable to extract introspection from stdout
+Traceback (most recent call last):
+  File "/home/thanhtut/test/ansible/lib/python3.10/site-packages/ansible_navigator/actions/images.py", line 537, in _parse
+    _warnings, json_str = output.split("{", 1)
+ValueError: not enough values to unpack (expected 2, got 1)
+2024-12-12T15:18:56.769664+00:00 ERROR 'ansible_navigator.actions.images._parse' Image introspection failed (parsed), the return value was: Traceback (most recent call last):
+  File "/home/thanhtut/.cache/ansible-navigator/image_introspect.py", line 16, in <module>
+    from typing import TypeAlias
+ImportError: cannot import name 'TypeAlias' from 'typing' (/usr/lib64/python3.9/typing.py)
+Traceback (most recent call last):
+  File "/home/thanhtut/test/ansible/lib/python3.10/site-packages/ansible_navigator/actions/images.py", line 537, in _parse
+    _warnings, json_str = output.split("{", 1)
+ValueError: not enough values to unpack (expected 2, got 1)
+2024-12-12T15:19:02.531879+00:00 CRITICAL 'ansible_navigator.actions._actions.run_interactive' Subcommand 'select' encountered a fatal error.
+2024-12-12T15:19:02.532119+00:00 ERROR 'ansible_navigator.actions._actions.run_interactive' Logging an uncaught exception
+Traceback (most recent call last):
+  File "/home/thanhtut/test/ansible/lib/python3.10/site-packages/ansible_navigator/actions/_actions.py", line 172, in run_interactive
+    return run_action(app=app, interaction=interaction)
+  File "/home/thanhtut/test/ansible/lib/python3.10/site-packages/ansible_navigator/actions/select.py", line 41, in run
+    app.steps.append(app.steps.current.select_func())  # add next
+  File "/home/thanhtut/test/ansible/lib/python3.10/site-packages/ansible_navigator/actions/images.py", line 320, in _build_image_content
+    value=self._images.selected["ansible"],
+KeyError: 'ansible'
+2024-12-12T15:19:27.294938+00:00 ERROR 'ansible_navigator.actions.images._parse' Unable to extract introspection from stdout
+Traceback (most recent call last):
+  File "/home/thanhtut/test/ansible/lib/python3.10/site-packages/ansible_navigator/actions/images.py", line 537, in _parse
+    _warnings, json_str = output.split("{", 1)
+ValueError: not enough values to unpack (expected 2, got 1)
+2024-12-12T15:19:27.295432+00:00 ERROR 'ansible_navigator.actions.images._parse' Image introspection failed (parsed), the return value was: Traceback (most recent call last):
+  File "/home/thanhtut/.cache/ansible-navigator/image_introspect.py", line 16, in <module>
+    from typing import TypeAlias
+ImportError: cannot import name 'TypeAlias' from 'typing' (/usr/lib64/python3.9/typing.py)
+Traceback (most recent call last):
+  File "/home/thanhtut/test/ansible/lib/python3.10/site-packages/ansible_navigator/actions/images.py", line 537, in _parse
+    _warnings, json_str = output.split("{", 1)
+ValueError: not enough values to unpack (expected 2, got 1)
+2024-12-12T15:20:17.475324+00:00 CRITICAL 'ansible_navigator.actions._actions.run_interactive' Subcommand 'select' encountered a fatal error.
+2024-12-12T15:20:17.475497+00:00 ERROR 'ansible_navigator.actions._actions.run_interactive' Logging an uncaught exception
+Traceback (most recent call last):
+  File "/home/thanhtut/test/ansible/lib/python3.10/site-packages/ansible_navigator/actions/_actions.py", line 172, in run_interactive
+    return run_action(app=app, interaction=interaction)
+  File "/home/thanhtut/test/ansible/lib/python3.10/site-packages/ansible_navigator/actions/select.py", line 41, in run
+    app.steps.append(app.steps.current.select_func())  # add next
+  File "/home/thanhtut/test/ansible/lib/python3.10/site-packages/ansible_navigator/actions/images.py", line 330, in _build_image_content
+    self._images.selected["python"]["details"],
+KeyError: 'python'
+2024-12-12T15:27:01.533297+00:00 WARNING 'ansible_navigator.image_manager.puller._log_message' Image inspection failed, image assumed to be corrupted or missing
+2024-12-12T15:27:01.533938+00:00 WARNING 'ansible_navigator.image_manager.puller._log_message' stdout: []
+
+2024-12-12T15:27:01.533987+00:00 WARNING 'ansible_navigator.image_manager.puller._log_message' stderr: Error: error inspecting object: ghcr.io/ansible/community-ansible-dev-tools:latest: image not known
+
+2024-12-13T05:46:21.508050+00:00 ERROR 'ansible_navigator.actions.images._parse' Unable to extract introspection from stdout
+Traceback (most recent call last):
+  File "/home/thanhtut/test/ansible/lib/python3.10/site-packages/ansible_navigator/actions/images.py", line 537, in _parse
+    _warnings, json_str = output.split("{", 1)
+ValueError: not enough values to unpack (expected 2, got 1)
+2024-12-13T05:46:21.510354+00:00 ERROR 'ansible_navigator.actions.images._parse' Image introspection failed (parsed), the return value was: 
+Traceback (most recent call last):
+  File "/home/thanhtut/test/ansible/lib/python3.10/site-packages/ansible_navigator/actions/images.py", line 537, in _parse
+    _warnings, json_str = output.split("{", 1)
+ValueError: not enough values to unpack (expected 2, got 1)
+2024-12-13T05:46:26.697139+00:00 CRITICAL 'ansible_navigator.actions._actions.run_interactive' Subcommand 'select' encountered a fatal error.
+2024-12-13T05:46:26.697327+00:00 ERROR 'ansible_navigator.actions._actions.run_interactive' Logging an uncaught exception
+Traceback (most recent call last):
+  File "/home/thanhtut/test/ansible/lib/python3.10/site-packages/ansible_navigator/actions/_actions.py", line 172, in run_interactive
+    return run_action(app=app, interaction=interaction)
+  File "/home/thanhtut/test/ansible/lib/python3.10/site-packages/ansible_navigator/actions/select.py", line 41, in run
+    app.steps.append(app.steps.current.select_func())  # add next
+  File "/home/thanhtut/test/ansible/lib/python3.10/site-packages/ansible_navigator/actions/images.py", line 320, in _build_image_content
+    value=self._images.selected["ansible"],
+KeyError: 'ansible'
+2024-12-13T05:46:34.059534+00:00 CRITICAL 'ansible_navigator.actions._actions.run_interactive' Subcommand 'select' encountered a fatal error.
+2024-12-13T05:46:34.059748+00:00 ERROR 'ansible_navigator.actions._actions.run_interactive' Logging an uncaught exception
+Traceback (most recent call last):
+  File "/home/thanhtut/test/ansible/lib/python3.10/site-packages/ansible_navigator/actions/_actions.py", line 172, in run_interactive
+    return run_action(app=app, interaction=interaction)
+  File "/home/thanhtut/test/ansible/lib/python3.10/site-packages/ansible_navigator/actions/select.py", line 41, in run
+    app.steps.append(app.steps.current.select_func())  # add next
+  File "/home/thanhtut/test/ansible/lib/python3.10/site-packages/ansible_navigator/actions/images.py", line 330, in _build_image_content
+    self._images.selected["python"]["details"],
+KeyError: 'python'
+2024-12-13T06:01:21.339677+00:00 CRITICAL 'ansible_navigator.actions.run_playbook._handle_message' Unhandled message from runner queue, discarded: {'event': 'verbose', 'uuid': '59e4d3b4-2b18-4967-9f01-6b8dc313e1be', 'counter': 1, 'stdout': '\x1b[1;35m[WARNING]: No inventory was parsed, only implicit localhost is available\x1b[0m', 'start_line': 0, 'end_line': 1, 'runner_ident': '1386b1dc-eef2-474e-bff3-c7d8bcee8538', 'created': '2024-12-13T06:01:21.330802+00:00'}
+2024-12-13T06:01:21.340932+00:00 CRITICAL 'ansible_navigator.actions.run_playbook._handle_message' Unhandled message from runner queue, discarded: {'event': 'verbose', 'uuid': 'afb7e71f-3953-4d4c-a0ec-562eae6696d5', 'counter': 2, 'stdout': '\x1b[1;35m[WARNING]: provided hosts list is empty, only localhost is available. Note that\x1b[0m', 'start_line': 1, 'end_line': 2, 'runner_ident': '1386b1dc-eef2-474e-bff3-c7d8bcee8538', 'created': '2024-12-13T06:01:21.340601+00:00'}
+2024-12-13T06:01:21.351346+00:00 CRITICAL 'ansible_navigator.actions.run_playbook._handle_message' Unhandled message from runner queue, discarded: {'event': 'verbose', 'uuid': '3347566a-dcf9-40bd-ab08-7f761f9e9334', 'counter': 3, 'stdout': "\x1b[1;35mthe implicit localhost does not match 'all'\x1b[0m", 'start_line': 2, 'end_line': 3, 'runner_ident': '1386b1dc-eef2-474e-bff3-c7d8bcee8538', 'created': '2024-12-13T06:01:21.341078+00:00'}
+2024-12-13T06:02:30.782049+00:00 CRITICAL 'ansible_navigator.actions.run_playbook._handle_message' Unhandled message from runner queue, discarded: {'event': 'verbose', 'uuid': '23092ab8-405e-4072-adc9-4f18911eba37', 'counter': 5, 'stdout': '\x1b[1;35m[WARNING]: Platform linux on host rocky1 is using the discovered Python\x1b[0m', 'start_line': 4, 'end_line': 5, 'runner_ident': '200fcfa2-3605-413c-97aa-016260bbd0da', 'created': '2024-12-13T06:02:30.775146+00:00'}
+2024-12-13T06:02:30.783107+00:00 CRITICAL 'ansible_navigator.actions.run_playbook._handle_message' Unhandled message from runner queue, discarded: {'event': 'verbose', 'uuid': 'bdb4b233-a169-4347-b3b6-61b0494d3c07', 'counter': 6, 'stdout': '\x1b[1;35minterpreter at /usr/bin/python3.8, but future installation of another Python\x1b[0m', 'start_line': 5, 'end_line': 6, 'runner_ident': '200fcfa2-3605-413c-97aa-016260bbd0da', 'created': '2024-12-13T06:02:30.775146+00:00'}
+2024-12-13T06:02:30.783389+00:00 CRITICAL 'ansible_navigator.actions.run_playbook._handle_message' Unhandled message from runner queue, discarded: {'event': 'verbose', 'uuid': '3facf10a-35ed-4e74-962f-f2e0e3baab97', 'counter': 7, 'stdout': '\x1b[1;35minterpreter could change the meaning of that path. See\x1b[0m', 'start_line': 6, 'end_line': 7, 'runner_ident': '200fcfa2-3605-413c-97aa-016260bbd0da', 'created': '2024-12-13T06:02:30.775146+00:00'}
+2024-12-13T06:02:30.783520+00:00 CRITICAL 'ansible_navigator.actions.run_playbook._handle_message' Unhandled message from runner queue, discarded: {'event': 'verbose', 'uuid': 'c1557767-ed0b-4bd5-a25b-e0f5ffc1ecf8', 'counter': 8, 'stdout': '\x1b[1;35mhttps://docs.ansible.com/ansible-\x1b[0m', 'start_line': 7, 'end_line': 8, 'runner_ident': '200fcfa2-3605-413c-97aa-016260bbd0da', 'created': '2024-12-13T06:02:30.775146+00:00'}
+2024-12-13T06:02:30.783688+00:00 CRITICAL 'ansible_navigator.actions.run_playbook._handle_message' Unhandled message from runner queue, discarded: {'event': 'verbose', 'uuid': '96e8ab98-30ca-4700-b7c2-ff521316ae4c', 'counter': 9, 'stdout': '\x1b[1;35mcore/2.17/reference_appendices/interpreter_discovery.html for more information.\x1b[0m', 'start_line': 8, 'end_line': 9, 'runner_ident': '200fcfa2-3605-413c-97aa-016260bbd0da', 'created': '2024-12-13T06:02:30.775146+00:00'}
