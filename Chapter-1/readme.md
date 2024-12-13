@@ -42,7 +42,7 @@ Automatic hub provides you with a way to manage and distribute automatic content
 ```
 
 ## Install the Ansible Content Navigator
-```
+```sh
 [user@host ~]$ subscription-manager register 
 
 
@@ -61,7 +61,7 @@ Playbook in the same format
 ```
 
 ## Change the execution environment images for run the ansible-navigator 
-```
+```sh
 [user@host ~]$ podman login registry.redhat.io 
 
 [user@host ~]$ podman login hub.lab.example.com
@@ -121,4 +121,34 @@ Configre git to ignore file and directories that should not be trackes or commit
 [user@host ~]$ git add .
 [user@host ~]$ git commit -m -a "update commit"
 [user@host ~]$ git push --set-upstream origin upstream
+```
+
+## Standard Project Structure
+```sh
+.
+├── dbservers.yml
+├── inventories/
+│   ├── prod/
+│   │   ├── group_vars/
+│   │   ├── host_vars/
+│   │   └── inventory/
+│   └── stage/
+│       ├── group_vars/
+│       ├── host_vars/
+│       └── inventory/
+├── roles/
+│   └── std_server/
+├── site.yml
+├── storage.yml
+└── webservers.yml
+```
+
+## Using Test Tools 
+```sh 
+[user@host ~]$ ansible-navigator run playbook.yml --syntax-check -m 
+```
+
+## Container look registry 
+```sh 
+[user@host ~] cat /etc/containers/registries.conf
 ```
