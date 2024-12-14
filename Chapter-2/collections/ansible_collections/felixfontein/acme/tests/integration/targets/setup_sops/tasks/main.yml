@@ -1,0 +1,13 @@
+---
+# GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2018-2020, Edoardo Tenani <e.tenani@arduino.cc> [@endorama]
+# SPDX-FileCopyrightText: 2022, Felix Fontein
+
+- name: Prepare status variable.
+  ansible.builtin.set_fact:
+    sops_installed: false
+
+- name: Run Ubuntu-specific tasks
+  ansible.builtin.include_tasks: ubuntu.yml
+  when: ansible_distribution == 'Ubuntu'

@@ -1,0 +1,34 @@
+{
+ "collection_info": {
+  "namespace": "o1labs",
+  "name": "crypto",
+  "version": "0.1.5",
+  "authors": [
+   "O1 Labs <zer0ne.io.x@gmail.com>"
+  ],
+  "readme": "README.md",
+  "tags": [
+   "crypto",
+   "blockchain",
+   "web3"
+  ],
+  "description": "infrastructure utilities and tooling dedicated to all things crypto/blockchain",
+  "license": [
+   "GPL-2.0-or-later"
+  ],
+  "license_file": null,
+  "dependencies": {},
+  "repository": "https://github.com/0x0I/operations",
+  "documentation": "https://github.com/0x0I/operations/tree/master/ansible/O1labs/crypto",
+  "homepage": "https://docs.01labs.net/",
+  "issues": "https://github.com/0x0I/operations/issues"
+ },
+ "file_manifest_file": {
+  "name": "FILES.json",
+  "ftype": "file",
+  "chksum_type": "sha256",
+  "chksum_sha256": "8508f3afa95e338fdf8befa772a7c36c28a1da1496d5fc326e916dd5ea3de401",
+  "format": 1
+ },
+ "format": 1
+}

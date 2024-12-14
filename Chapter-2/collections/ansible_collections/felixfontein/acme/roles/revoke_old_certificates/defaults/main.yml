@@ -1,0 +1,15 @@
+---
+# GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2020, Felix Fontein
+
+acme_certificate_keys_old_path: keys/old/
+acme_certificate_acme_directory: https://acme-v02.api.letsencrypt.org/directory
+acme_certificate_acme_version: 2
+# For staging, use:
+#   acme_certificate_acme_directory: https://acme-staging-v02.api.letsencrypt.org/directory  (ACME v2)
+acme_certificate_validate_certs: true
+acme_certificate_revoke_reason: 4
+# 4: superseeded (i.e. you issued a new certificate, this is an old one)
+# 5: cessation of operation (i.e. you don't want to use this one anymore)
+acme_certificate_revoke_with_acme_account: false

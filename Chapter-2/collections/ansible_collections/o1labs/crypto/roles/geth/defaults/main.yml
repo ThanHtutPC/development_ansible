@@ -1,0 +1,50 @@
+---
+setup_mode: container
+target_services: [ 'geth', 'geth-exporter']
+ops_runtime_dir: /var/tmp/geth
+config_env_file: "{{ ops_runtime_dir }}/.env"
+
+image: 0labs/geth:latest
+chain: rinkeby
+config_dir: /etc/geth
+host_data_dir: /operations/ethereum/geth/data
+data_dir: /root/.ethereum
+
+p2p_port: 30303
+rpc_port: 8545
+ws_port: 8546
+
+enable_http_server: true
+enable_metrics_server: true
+metrics_port: 6060
+metrics_addr: 0.0.0.0
+
+log_mode: debug
+verbosity_level: 3
+
+cpus: 1.0
+memory: 4g
+
+exporter_image: hunterlong/gethexporter:latest
+exporter_rpc_addr: http://geth:8545
+exporter_port: 10090
+
+restart_policy: unless-stopped
+
+_default_config:
+  Eth:
+    SyncMode: light
+  Node:
+    DataDir: "{{ data_dir }}"
+    HTTPHost: 0.0.0.0
+    HTTPCors: "['*']"
+    HTTPVirtualHosts: "['*']"
+    WSHost: 0.0.0.0
+  Metrics:
+    Enabled: "true"
+    HTTP: 0.0.0.0
+config: {}
+
+env_vars: {}
+
+uninstall: false

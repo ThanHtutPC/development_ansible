@@ -1,0 +1,30 @@
+---
+# GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2020, Felix Fontein
+
+- name: DNS sanity checks (1/2)
+  ansible.builtin.assert:
+    that:
+      - >-
+        (acme_certificate_hosttech_username is defined and acme_certificate_hosttech_password is defined)
+        or acme_certificate_hosttech_token is defined
+      - >-
+        not (
+          (acme_certificate_hosttech_username is defined or acme_certificate_hosttech_password is defined)
+          and acme_certificate_hosttech_token is defined
+        )
+    msg: >-
+      acme_certificate_hosttech_token must be specified for HostTech DNS (new API), or alternatively
+      acme_certificate_hosttech_username and acme_certificate_hosttech_password must be specified (old API)
+  run_once: true
+  when: acme_certificate_verify_auth
+
+- name: DNS sanity checks (2/2)
+  ansible.builtin.assert:
+    that:
+      - >
+        lookup('community.general.collection_version', 'community.dns',
+               result_not_found='0.0.0', result_no_version='2.0.0') is version('2.0.0', '>=')
+    msg: "community.dns 2.0.0 or newer must be installed for HostTech DNS"
+  run_once: true

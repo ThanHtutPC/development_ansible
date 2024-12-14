@@ -1,0 +1,56 @@
+---
+setup_mode: container
+target_services: [ 'beacon-node', 'validator']
+ops_runtime_dir: /var/tmp/teku
+beacon_env_file: "{{ ops_runtime_dir }}/.beacon.env"
+beacon_env_vars: {}
+validator_env_file: "{{ ops_runtime_dir }}/.validator.env"
+validator_env_vars: {}
+
+image: 0labs/teku:latest
+eth1_endpoints: "http://ethereum-rpc.goerli.0labs.net"
+p2p_tcp_port: 9000
+p2p_udp_port: 9000
+beacon_api_port: 5051
+beacon_metrics_port: 8008
+validator_metrics_port: 8009
+
+teku_config_dir: /etc/teku
+
+host_data_dir: "{{ ops_runtime_dir }}"
+host_wallet_dir: "{{ host_data_dir }}/wallets"
+host_keys_dir: "{{ host_data_dir }}/keys"
+data_dir: /data
+
+# Uncomment or define 'overrides' to trigger custom user-data migration
+#
+# override_wallet_dir: "{{ host_wallet_dir }}"
+# override_keys_dir: "{{ host_keys_dir }}"
+
+cpus: 1.0
+memory: 4g
+
+restart_policy: unless-stopped
+
+_default_beacon_config:
+  network: prater
+  data-path: "{{ data_dir }}"
+  rest-api-enabled: true
+  rest-api-interface: 0.0.0.0
+  rest-api-host-allowlist: "*"
+  metrics-enabled: true
+  metrics-interface: 0.0.0.0
+  metrics-host-allowlist: "*"
+beacon_config: {}
+
+_default_validator_config:
+  network: auto
+  data-path: "{{ data_dir }}"
+  beacon-node-api-endpoint: http://teku-beacon:5051
+  validators-graffiti: O1
+  metrics-enabled: true
+  metrics-interface: 0.0.0.0
+  metrics-host-allowlist: "*"
+validator_config: {}
+
+uninstall: false

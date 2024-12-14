@@ -1,0 +1,64 @@
+---
+setup_mode: container
+target_services: [ 'beacon-node', 'validator']
+ops_runtime_dir: /var/tmp/prysm
+beacon_env_file: "{{ ops_runtime_dir }}/.beacon.env"
+beacon_env_vars: {}
+validator_env_file: "{{ ops_runtime_dir }}/.validator.env"
+validator_env_vars: {}
+
+image: 0labs/prysm:latest
+p2p_tcp_port: 13000
+p2p_udp_port: 12000
+eth2_api_port: 3501
+beacon_rpc_port: 4000
+beacon_metrics_port: 8080
+
+validator_gateway_port: 7500
+validator_rpc_port: 7000
+validator_metrics_port: 8081
+
+prysm_config_dir: /etc/prysm
+
+host_data_dir: "{{ ops_runtime_dir }}"
+host_wallet_dir: "{{ host_data_dir }}/wallets"
+host_keys_dir: "{{ host_data_dir }}/keys"
+data_dir: /data
+
+restart_policy: unless-stopped
+
+# Uncomment or define 'overrides' to trigger custom user-data migration
+#
+# override_wallet_dir: "{{ host_wallet_dir }}"
+# override_keys_dir: "{{ host_keys_dir }}"
+
+cpus: 1.0
+memory: 4g
+
+_default_beacon_config:
+  accept-terms-of-use: true
+  genesis-state: /prysm/data/genesis.ssz
+  http-web3provider: http://ethereum-rpc.goerli.01labs.net:8545
+  rpc-host: 0.0.0.0
+  grpc-gateway-host: 0.0.0.0
+  monitoring-host: 0.0.0.0
+  enable-db-backup-webhook: true
+  db-backup-output-dir: /data/backups
+beacon_config: {}
+
+_default_validator_config:
+  accept-terms-of-use: true
+  beacon-rpc-provider: beacon-node:4000
+  rpc-host: 0.0.0.0
+  grpc-gateway-host: 0.0.0.0
+  monitoring-host: 0.0.0.0
+  rpc: true
+  web: true
+  wallet-dir: /wallets
+  wallet-password-file: /tmp/wallet-password
+  account-password-file: /tmp/account-password
+  enable-db-backup-webhook: true
+  db-backup-output-dir: /data/backups
+validator_config: {}
+
+uninstall: false

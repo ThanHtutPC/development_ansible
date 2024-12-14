@@ -1,0 +1,3 @@
+---
+- name: Setup OpenEthereum infrastructure topology
+  include_tasks: "{{ setup_mode }}/setup.yml"

@@ -1,0 +1,59 @@
+---
+- name: Provision instance monitoring services
+  hosts: monitored
+  roles:
+    - role: "../../roles/monitoring"
+      vars:
+        target_services: [ 'node-exporter' ]
+
+- name: Setup Prometheus observability service
+  hosts: prometheus
+  roles:
+    - role: "../../roles/monitoring"
+      vars:
+        target_services: [ 'prometheus' ]
+        monitored_services: [ 'chainlink', 'geth', 'geth-exporter', 'openethereum', 'postgres' ]
+        prometheus_scrape_configs:
+          - job_name: "prometheus"
+            static_configs:
+              - targets: ["prometheus:9090"]
+          - job_name: "ethereum"
+            metrics_path: "/debug/metrics/prometheus"
+            static_configs:
+              - targets: [
+                "ethereum-rpc.goerli.01labs.net:6060",
+                "ethereum-rpc.mainnet.01labs.net:6060",
+                "ethereum-rpc.rinkeby.01labs.net:6060"
+                ]
+          - job_name: "geth-exporter"
+            static_configs:
+              - targets: [
+                "ethereum-rpc.goerli.01labs.net:10090",
+                "ethereum-rpc.mainnet.01labs.net:10090",
+                "ethereum-rpc.rinkeby.01labs.net:10090"
+                ]
+          - job_name: "node-exporter"
+            static_configs:
+              - targets: [
+                "ethereum-rpc.goerli.01labs.net:9100",
+                "ethereum-rpc.mainnet.01labs.net:9100",
+                "ethereum-rpc.rinkeby.01labs.net:9100"
+                ]
+          - job_name: "chainlink-web"
+            static_configs:
+              - targets: [
+                "chainlink.goerli.01labs.net:6688",
+                "chainlink.rinkeby.01labs.net:6688"
+                ]
+          - job_name: "aws-exporter"
+            static_configs:
+              - targets: [ "aws-stats.01labs.net:9686" ]
+          - job_name: "gcp-exporter"
+            static_configs:
+              - targets: [ "gcp-stats.01labs.net:9692" ]
+- name: Setup Grafana observability service
+  hosts: grafana
+  roles:
+    - role: "../../roles/monitoring"
+      vars:
+        target_services: [ 'grafana' ]

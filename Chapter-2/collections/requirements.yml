@@ -1,0 +1,8 @@
+---
+collections: 
+  - name: felixfontein.acme 
+
+  #- name: o1labs.crypto
+  #  version: 0.1.3
+
+  - name: ./collections/o1labs-crypto-0.1.5.tar.gz

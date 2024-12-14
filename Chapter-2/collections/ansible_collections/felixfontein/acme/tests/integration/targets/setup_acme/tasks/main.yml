@@ -1,0 +1,23 @@
+---
+# GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2020, Felix Fontein
+
+- name: Default value for OpenSSL binary path
+  ansible.builtin.set_fact:
+    openssl_binary: openssl
+
+- name: Register openssl version  # noqa no-changed-when noqa risky-shell-pipe
+  ansible.builtin.shell: "{{ openssl_binary }} version | cut -d' ' -f2"
+  register: openssl_version
+
+- name: Register cryptography version  # noqa no-changed-when
+  ansible.builtin.command: "{{ ansible_python.executable }} -c 'import cryptography; print(cryptography.__version__)'"
+  register: cryptography_version
+
+- name: Output details
+  ansible.builtin.debug:
+    msg: >-
+      ACME test container IP is {{ acme_host }};
+      OpenSSL version is {{ openssl_version.stdout }};
+      cryptography version is {{ cryptography_version.stdout }}

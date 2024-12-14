@@ -1,0 +1,3 @@
+---
+- name: Setup Chainlink infrastructure topology
+  include_tasks: "{{ setup_mode }}/setup.yml"

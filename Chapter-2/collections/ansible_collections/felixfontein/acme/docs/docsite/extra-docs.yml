@@ -1,0 +1,15 @@
+---
+# GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2020, Felix Fontein
+sections:
+  - title: General
+    toctree:
+      - requirements
+      - general_role_parameters
+      - acme_account
+  - title: Roles
+    toctree:
+      - account_key_rollover_role
+      - acme_certificate_role
+      - revoke_old_certificates_role

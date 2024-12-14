@@ -1,0 +1,83 @@
+---
+- name: Setup Prater Prysm instances
+  hosts: prysm_prater
+  roles:
+    - role: "../../roles/prysm"
+      vars:
+        eth2_chain: prater
+        target_services: [ 'beacon-node', 'validator' ]
+        host_keys_dir: /operations/prysm/keys
+        beacon_config:
+          prater: true
+          db-backup-output-dir: /data/backups
+          http-web3provider: http://geth:8545,http://ethereum-rpc.goerli.01labs.net:8545
+        validator_config:
+          prater: true
+          db-backup-output-dir: /data/backups
+
+- name: Setup Prater Teku instances
+  hosts: teku_prater
+  roles:
+    - role: "../../roles/teku"
+      vars:
+        eth2_chain: prater
+        target_services: [ 'beacon-node', 'validator' ]
+        eth1_endpoints: http://geth:8545,http://ethereum-rpc.goerli.01labs.net:8545
+        beacon_config:
+          network: prater
+          data-path: /data
+          initial-state: https://1zmZfn5jwHnW8kxtZ8JKZobXNge:4a7c68d25f0278b47bf77b2cdc2ea21f@eth2-beacon-prater.infura.io/eth/v1/debug/beacon/states/finalized
+        validator_config:
+          network: prater
+
+- name: Setup Prater Lighthouse instances
+  hosts: lighthouse_prater
+  roles:
+    - role: "../../roles/lighthouse"
+      vars:
+        eth2_chain: prater
+        target_services: [ 'beacon-node', 'validator' ]
+        setup_validator: "true"
+        host_data_dir: /operations/lighthouse/data
+        host_keys_dir: /operations/lighthouse/keys
+        beacon_extra_args: "--network=prater --eth1 --http --http-address=0.0.0.0 --http-allow-origin=* --metrics --metrics-address=0.0.0.0 --eth1-endpoints=http://geth:8545,http://ethereum-rpc.goerli.01labs.net:8545,https://goerli.infura.io/v3/4a3a6c645dc94d1b82f8f631a878e03c"
+        beacon_env_vars: {}
+        validator_extra_args: "--network=prater --enable-doppelganger-protection=true --graffiti=O1 --http --http-address=0.0.0.0 --http-allow-origin=* --metrics --metrics-address=0.0.0.0 --metrics-allow-origin=* --unencrypted-http-transport --beacon-nodes=http://lighthouse-beacon:5052,http://lighthouse.prater.01labs.net:5052"
+        validator_env_vars: {}
+
+- name: Setup Mainnet Prysm instances
+  hosts: prysm_mainnet
+  roles:
+    - role: "../../roles/prysm"
+      vars:
+        eth2_chain: mainnet
+        target_services: [ 'beacon-node' ]
+        beacon_config:
+          mainnet: true
+          datadir: /data
+          db-backup-output-dir: /data/backups
+          http-web3provider: http://geth:8545,http://ethereum-rpc.mainnet.01labs.net:8545,https://mainnet.infura.io/v3/4a3a6c645dc94d1b82f8f631a878e03c
+
+- name: Setup Mainnet Lighthouse instances
+  hosts: lighthouse_mainnet
+  roles:
+    - role: "../../roles/lighthouse"
+      vars:
+        eth2_chain: mainnet
+        target_services: [ 'beacon-node' ]
+        host_data_dir: /operations/lighthouse/data
+        host_keys_dir: /operations/lighthouse/keys
+        beacon_extra_args: "--network=mainnet --eth1 --http --http-address=0.0.0.0 --http-allow-origin=* --metrics --metrics-address=0.0.0.0 --eth1-endpoints=http://geth:8545,http://ethereum-rpc.mainnet.01labs.net:8545,https://mainnet.infura.io/v3/4a3a6c645dc94d1b82f8f631a878e03c --checkpoint-sync-url https://1zmZfn5jwHnW8kxtZ8JKZobXNge:4a7c68d25f0278b47bf77b2cdc2ea21f@eth2-beacon-mainnet.infura.io"
+
+- name: Setup Mainnet Teku instances
+  hosts: teku_mainnet
+  roles:
+    - role: "../../roles/teku"
+      vars:
+        eth2_chain: mainnet
+        target_services: [ 'beacon-node' ]
+        eth1_endpoints: http://geth:8545,http://ethereum-rpc.mainnet.01labs.net:8545,https://mainnet.infura.io/v3/4a3a6c645dc94d1b82f8f631a878e03c
+        beacon_config:
+          network: mainnet
+          data-path: /data
+          initial-state: https://1zmZfn5jwHnW8kxtZ8JKZobXNge:4a7c68d25f0278b47bf77b2cdc2ea21f@eth2-beacon-mainnet.infura.io/eth/v1/debug/beacon/states/finalized

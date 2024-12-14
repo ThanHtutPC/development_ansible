@@ -1,0 +1,104 @@
+---
+# GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2020, Felix Fontein
+
+####################################################################
+# WARNING: These are designed specifically for Ansible tests       #
+# and should not be used as examples of how to write Ansible roles #
+####################################################################
+
+- name: Set global parameters
+  ansible.builtin.set_fact:
+    acme_certificate_acme_directory: https://{{ acme_host }}:14000/dir
+    acme_certificate_acme_version: 2
+    acme_certificate_validate_certs: false
+    acme_certificate_key_length: 2048
+    acme_certificate_keys_path: "{{ output_dir }}/keys/"
+    acme_certificate_keys_old_path: "{{ output_dir }}/keys/"
+    acme_certificate_INTERNAL_ansibletest: true
+    acme_certificate_dns_provider: ansibletest
+
+- name: Create key / certificate directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0700"
+  loop:
+    - "{{ acme_certificate_keys_path }}"
+    - "{{ acme_certificate_keys_old_path }}"
+
+- name: Get information on root and intermediate certificates
+  vars:
+    types:
+      - root
+      - intermediate
+    root_numbers:
+      # The number 3 comes from here: https://github.com/ansible/acme-test-container/blob/master/run.sh#L12
+      - 0
+      - 1
+      - 2
+      - 3
+    interesting_keys:
+      - authority_key_identifier
+      - subject_key_identifier
+      - issuer
+      - subject
+  block:
+    - name: Obtain root and intermediate certificates
+      ansible.builtin.get_url:  # noqa risky-file-permissions
+        url: "http://{{ acme_host }}:5000/{{ item.0 }}-certificate-for-ca/{{ item.1 }}"
+        dest: "{{ output_dir }}/acme-{{ item.0 }}-{{ item.1 }}.pem"
+      loop: "{{ query('ansible.builtin.nested', types, root_numbers) }}"
+
+    - name: Analyze root certificates
+      community.crypto.x509_certificate_info:
+        path: "{{ output_dir }}/acme-root-{{ item }}.pem"
+      loop: "{{ root_numbers }}"
+      register: acme_roots
+
+    - name: Analyze intermediate certificates
+      community.crypto.x509_certificate_info:
+        path: "{{ output_dir }}/acme-intermediate-{{ item }}.pem"
+      loop: "{{ root_numbers }}"
+      register: acme_intermediates
+
+    - name: Set root list (1/3)
+      ansible.builtin.set_fact:
+        x__: "{{ item | dict2items | selectattr('key', 'in', interesting_keys) | list | items2dict }}"
+        y__: "{{ lookup('ansible.builtin.file', output_dir ~ '/acme-root-' ~ item.item ~ '.pem', rstrip=False) }}"
+      loop: "{{ acme_roots.results }}"
+      register: acme_roots_tmp
+
+    - name: Set root list (2/3)
+      ansible.builtin.set_fact:
+        x__: "{{ item | dict2items | selectattr('key', 'in', interesting_keys) | list | items2dict }}"
+        y__: "{{ lookup('ansible.builtin.file', output_dir ~ '/acme-intermediate-' ~ item.item ~ '.pem', rstrip=False) }}"
+      loop: "{{ acme_intermediates.results }}"
+      register: acme_intermediates_tmp
+
+    - name: Set root list (3/3)
+      ansible.builtin.set_fact:
+        acme_roots: "{{ acme_roots_tmp.results | map(attribute='ansible_facts.x__') | list }}"
+        acme_root_certs: "{{ acme_roots_tmp.results | map(attribute='ansible_facts.y__') | list }}"
+        acme_intermediates: "{{ acme_intermediates_tmp.results | map(attribute='ansible_facts.x__') | list }}"
+        acme_intermediate_certs: "{{ acme_intermediates_tmp.results | map(attribute='ansible_facts.y__') | list }}"
+
+- name: ACME root certificate info
+  ansible.builtin.debug:
+    var: acme_roots
+
+# - name: ACME root certificates as PEM
+#   ansible.builtin.debug:
+#     var: acme_root_certs
+
+- name: ACME intermediate certificate info
+  ansible.builtin.debug:
+    var: acme_intermediates
+
+# - name: ACME intermediate certificates as PEM
+#   ansible.builtin.debug:
+#     var: acme_intermediate_certs
+
+- name: Running tests
+  ansible.builtin.import_tasks: impl.yml

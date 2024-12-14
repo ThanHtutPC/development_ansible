@@ -1,0 +1,6 @@
+---
+- name: Manage storage/data setup
+  include_tasks: "common/storage-setup.yml"
+
+- name: Setup Prysm infrastructure topology
+  include_tasks: "{{ setup_mode }}/setup.yml"

@@ -1,0 +1,16 @@
+---
+# GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2020, Felix Fontein
+
+# Clean up HTTP challenges for ansible-test's ACME test container
+- name: "Cleaning up challenge files for {{ ', '.join(acme_certificate_domains + acme_certificate_ips) }} (ansible-test internal)"
+  ansible.builtin.uri:
+    # noqa jinja[spacing] - The problem is that the space eating in the following YAML string will result in `{{item...`
+    url: >-
+      http://{{ acme_host }}:5000/http/{{ item.key }}/{{
+        item.value[acme_certificate_challenge].resource[('.well-known/acme-challenge/' | length):] }}
+    method: DELETE
+  delegate_to: localhost
+  run_once: true
+  with_dict: "{{ acme_certificate_INTERNAL_challenge.get('challenge_data', {}) }}"

@@ -1,0 +1,30 @@
+---
+# GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2020, Oleg Gerasymchuk <oleg.gerasymchuk@globallogic.com>
+# SPDX-FileCopyrightText: 2020, Felix Fontein
+
+- name: Creating challenge DNS entries for {{ ', '.join(acme_certificate_domains + acme_certificate_ips) }} via NS1 DNS
+  ns1_record:  # noqa: fqcn[action]
+    apiKey: "{{ acme_certificate_ns1_secret_key | default(omit) }}"
+    name: "{{ item.key | felixfontein.acme._substitute_dns(acme_certificate_dns_substitution) }}"
+    zone: "{{ item.key | felixfontein.acme._substitute_dns(acme_certificate_dns_substitution) | community.dns.get_registrable_domain }}"
+    state: present
+    type: TXT
+    answers:
+      - answer:
+          - "{{ item.value[0] }}"
+        meta:
+          up: true
+  delegate_to: localhost
+  when: "'_acme-challenge' in item.key"
+  run_once: true
+  with_dict: "{{ acme_certificate_INTERNAL_challenge.challenge_data_dns }}"
+
+- name: Wait for DNS entries to propagate
+  community.dns.wait_for_txt:
+    records: >-
+      {{ acme_certificate_INTERNAL_challenge.challenge_data_dns | dict2items(key_name='name', value_name='values') | list }}
+    timeout: 120
+  delegate_to: localhost
+  run_once: true

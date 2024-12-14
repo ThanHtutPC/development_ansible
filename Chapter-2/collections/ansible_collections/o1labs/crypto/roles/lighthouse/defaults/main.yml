@@ -1,0 +1,38 @@
+---
+setup_mode: container
+target_services: [ 'beacon-node', 'validator']
+ops_runtime_dir: /var/tmp/lighthouse
+beacon_env_file: "{{ ops_runtime_dir }}/.beacon.env"
+beacon_env_vars: {}
+validator_env_file: "{{ ops_runtime_dir }}/.validator.env"
+validator_env_vars: {}
+
+image: 0labs/lighthouse:latest
+p2p_tcp_port: 9000
+p2p_udp_port: 9000
+beacon_api_port: 5052
+beacon_metrics_port: 5054
+
+beacon_extra_args: ""
+
+validator_api_port: 5062
+validator_metrics_port: 5064
+
+validator_extra_args: ""
+
+host_data_dir: "{{ ops_runtime_dir }}"
+host_wallet_dir: "{{ host_data_dir }}/wallets"
+host_keys_dir: "{{ host_data_dir }}/keys"
+data_dir: /root/.lighthouse
+
+# Uncomment or define 'overrides' to trigger custom user-data migration
+#
+# override_wallet_dir: "{{ host_wallet_dir }}"
+# override_keys_dir: "{{ host_keys_dir }}"
+
+cpus: 1.0
+memory: 4g
+
+restart_policy: unless-stopped
+
+uninstall: false

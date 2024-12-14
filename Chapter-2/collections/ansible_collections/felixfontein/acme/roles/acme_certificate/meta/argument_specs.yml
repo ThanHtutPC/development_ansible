@@ -1,0 +1,384 @@
+---
+# GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2020, Felix Fontein
+
+argument_specs:
+  main:
+    short_description: Issue TLS/SSL certificates from an ACME CA
+    version_added: 0.1.0
+    description:
+      - "This is a role which can use any CA supporting the ACME protocol, such as L(Let's Encrypt,https://letsencrypt.org/),
+        L(Buypass,https://www.buypass.com/ssl/products/acme) or L(ZeroSSL,https://zerossl.com/features/acme/), to issue
+        TLS/SSL certificates for your server."
+      - "The main advantage of this approach over others is that B(almost no code is executed on your webserver): only when
+        you use HTTP challenges, files need to be copied onto your webserver, and afterwards deleted from it. Everything
+        else is executed on your local machine! In particular, the account key is B(never) sent to another machine."
+      - "This role does not cover installing the certificates, you have to do that yourself in another role."
+    author:
+      - Felix Fontein (@felixfontein)
+    options:
+      acme_certificate_acme_account:
+        type: str
+        description:
+          - Path to the private ACME account key. Either this or O(acme_certificate_acme_account_content) must always be specified.
+      acme_certificate_acme_account_content:
+        type: str
+        description:
+          - Content of the private ACME account key. Either this or O(acme_certificate_acme_account) must always be specified.
+      acme_certificate_acme_account_uri:
+        type: str
+        description:
+          - Instead of determining the account URI from the account key, assumes the given account URI.
+      acme_certificate_acme_directory:
+        type: str
+        default: https://acme-v02.api.letsencrypt.org/directory
+        description:
+          - The ACME directory to use.
+          - Default is V(https://acme-v02.api.letsencrypt.org/directory), which is the current production ACME v2 endpoint of Let's Encrypt.
+      acme_certificate_acme_version:
+        type: int
+        default: 2
+        description:
+          - The ACME directory's version.
+      acme_certificate_server_location:
+        type: str
+        default: /var/www/challenges
+        description:
+          - Location where V(.well-known/acme-challenge/) will be served from.
+      acme_certificate_regenerate_private_keys:
+        type: bool
+        default: true
+        description:
+          - Whether to regenerate private keys.
+          - It is recommended to regularly create new private keys instead of re-using the existing ones forever.
+            The easiest way to ensure this is to simply regenerate them when the certificates are regenerated.
+          - If you use public key pinning, make sure to set this to V(false)!
+      acme_certificate_http_become:
+        type: bool
+        default: false
+        description:
+          - "Argument for V(become:) for the M(ansible.builtin.file) and M(ansible.builtin.copy) tasks."
+      acme_certificate_http_challenge_user:
+        type: str
+        default: root
+        description:
+          - The user the challenge files are owned by.
+      acme_certificate_http_challenge_group:
+        type: str
+        default: http
+        description:
+          - The group the challenge files are owned by.
+      acme_certificate_http_challenge_folder_mode:
+        type: str
+        default: '0750'
+        description:
+          - The mode to use for the challenge folder.
+      acme_certificate_http_challenge_file_mode:
+        type: str
+        default: '0640'
+        description:
+          - The mode to use for the challenge files.
+      acme_certificate_dns_provider:
+        type: str
+        choices:
+          - route53
+          - hosttech
+          - ns1
+          - inwx
+          - cloudflare
+          - ansibletest
+        description:
+          - Determines which DNS provider is used for DNS challenges.
+          - Every DNS provider requires further configuration.
+          - The value V(ansibletest) must not be used outside of integration tests. It will B(not) work.
+      acme_certificate_aws_access_key:
+        type: str
+        description:
+          - When using O(acme_certificate_dns_provider=route53), the AWS access key for Route53 must be passed in this option.
+          - When O(acme_certificate_verify_auth=false), this is not required when O(acme_certificate_dns_provider=route53) and
+            can be provided in other ways, for example with R(module defaults, module_defaults).
+      acme_certificate_aws_secret_key:
+        type: str
+        description:
+          - When using O(acme_certificate_dns_provider=route53), the AWS secret key for Route53 must be passed in this option.
+          - When O(acme_certificate_verify_auth=false), this is not required when O(acme_certificate_dns_provider=route53) and
+            can be provided in other ways, for example with R(module defaults, module_defaults).
+      acme_certificate_hosttech_username:
+        type: str
+        description:
+          - When using O(acme_certificate_dns_provider=hosttech) with the old HostTech WSDL API,
+            the API username must be passed in this option.
+          - We recommend to use O(acme_certificate_hosttech_token) instead of O(acme_certificate_hosttech_username)
+            and O(acme_certificate_hosttech_password).
+          - When O(acme_certificate_verify_auth=false), this is not required when O(acme_certificate_dns_provider=hosttech) and
+            can be provided in other ways, for example with R(module defaults, module_defaults).
+      acme_certificate_hosttech_password:
+        type: str
+        description:
+          - When using O(acme_certificate_dns_provider=hosttech) with the old HostTech WSDL API,
+            the API password must be passed in this option.
+          - We recommend to use O(acme_certificate_hosttech_token) instead of O(acme_certificate_hosttech_username)
+            and O(acme_certificate_hosttech_password).
+          - When O(acme_certificate_verify_auth=false), this is not required when O(acme_certificate_dns_provider=hosttech) and
+            can be provided in other ways, for example with R(module defaults, module_defaults).
+      acme_certificate_hosttech_token:
+        type: str
+        description:
+          - When using O(acme_certificate_dns_provider=hosttech) with the new HostTech JSON REST API,
+            the API token must be passed in this option.
+          - When O(acme_certificate_verify_auth=false), this is not required when O(acme_certificate_dns_provider=hosttech) and
+            can be provided in other ways, for example with R(module defaults, module_defaults).
+      acme_certificate_ns1_secret_key:
+        type: str
+        description:
+          - When using O(acme_certificate_dns_provider=ns1), the NS1 account key must be passed in this option.
+          - Please note that NS1 support depends on the external module C(ns1_record). Please check out the
+            documentation on how to install it.
+          - When O(acme_certificate_verify_auth=false), this is not required when O(acme_certificate_dns_provider=ns1) and
+            can be provided in other ways, for example with R(module defaults, module_defaults).
+      acme_certificate_inwx_username:
+        type: str
+        description:
+          - When using O(acme_certificate_dns_provider=inwx), the INWX account username must be passed in this option.
+          - Please note that INWX support depends on the collection C(inwx.collection). Please check out the
+            documentation on how to install it.
+          - When O(acme_certificate_verify_auth=false), this is not required when O(acme_certificate_dns_provider=inwx) and
+            can be provided in other ways, for example with R(module defaults, module_defaults).
+      acme_certificate_inwx_password:
+        type: str
+        description:
+          - When using O(acme_certificate_dns_provider=inwx), the INWX account password must be passed in this option.
+          - Please note that INWX support depends on the collection C(inwx.collection). Please check out the
+            documentation on how to install it.
+          - Please note that the collection C(inwx.collection) does currently not support 2FA (two factor authentication).
+            In order to use this module you need to disable it.
+          - When O(acme_certificate_verify_auth=false), this is not required when O(acme_certificate_dns_provider=inwx) and
+            can be provided in other ways, for example with R(module defaults, module_defaults).
+      acme_certificate_cloudflare_token:
+        type: str
+        description:
+          - When using O(acme_certificate_dns_provider=cloudflare), a valid Cloudflare API token must be passed via this option.
+        version_added: 0.7.0
+      acme_certificate_domains:
+        type: str
+        description:
+          - The domain names you want to get a certificate for.
+          - Wildcards are only allowed as the first component, i.e. V(*.example.com) is ok, while V(*.*.example.com) and
+            V(www.*.example.com) are not ok.
+          - Also, when wildcards are used, not every challenge type is allowed. Let's Encrypt only allows wildcard domains
+            with the V(dns-01) challenge. At least one of O(acme_certificate_domains) and O(acme_certificate_ips) must be specified.
+      acme_certificate_ips:
+        type: str
+        description:
+          - The IP addresses you want to get a certificate for.
+          - B(Note) that this is not supported by every CA!
+          - At least one of O(acme_certificate_domains) and O(acme_certificate_ips) must be specified.
+      acme_certificate_acme_email:
+        type: str
+        description:
+          - Your email address which shall be associated to the ACME account.
+      acme_certificate_algorithm:
+        type: str
+        default: rsa
+        choices:
+          - rsa
+          - p-256
+          - p-384
+          - p-521
+        description:
+          - The algorithm used for creating private keys.
+          - The default is V(rsa) for RSA keys.
+          - Other choices are V(p-256), V(p-384) or V(p-521) for the NIST elliptic curves C(prime256v1),
+            C(secp384r1) and C(secp521r1), respectively.
+      acme_certificate_key_length:
+        type: int
+        default: 4096
+        description:
+          - The bit-size to use for RSA private keys.
+          - Should not be less than 2048. Also values above 4096 might not be supported by all TLS/SSL clients.
+      acme_certificate_key_name:
+        type: str
+        description:
+          - The basename for storing the keys and certificates.
+          - The default is the first domain specified, with V(*) replaced by V(_).
+      acme_certificate_keys_path:
+        type: str
+        default: keys/
+        description:
+          - Where the keys and certificates are stored.
+      acme_certificate_keys_old_path:
+        type: str
+        default: keys/old/
+        description:
+          - Where old keys and certificates should be copied to.
+          - Used in case O(acme_certificate_keys_old_store=true).
+      acme_certificate_keys_old_store:
+        type: bool
+        default: false
+        description:
+          - If set to V(true), will make copies of old keys and certificates.
+          - The copies will be stored in the directory specified by O(acme_certificate_keys_old_path).
+      acme_certificate_keys_old_prepend_timestamp:
+        type: bool
+        default: false
+        description:
+          - Whether copies of old keys and certificates should be prepended by the current date and time.
+      acme_certificate_use_sops_for_key:
+        type: bool
+        default: false
+        description:
+          - Use L(Mozilla sops,https://github.com/mozilla/sops) to encrypt private key.
+          - Needs C(.sops.yaml) file inside the keys directory or somewhere up the directory chain.
+      acme_certificate_ocsp_must_staple:
+        type: bool
+        default: false
+        description:
+          - Whether a certificate with the OCSP Must Staple extension is requested.
+      acme_certificate_terms_agreed:
+        type: bool
+        default: false
+        description:
+          - Whether the terms of services are accepted or not.
+          - Usually needs to be set explicitly to V(true) to allow creating an ACME account.
+          - This is only used for ACME v2.
+      acme_certificate_challenge:
+        type: str
+        choices:
+          - http-01
+          - dns-01
+        description:
+          - The challenge type to use.
+          - Should be V(http-01) for HTTP challenges (needs access to web server) or V(dns-01) for DNS challenges (needs
+            access to DNS provider).
+      acme_certificate_root_certificate:
+        type: str
+        default: https://letsencrypt.org/certs/isrgrootx1.pem
+        description:
+          - The root certificate for the ACME directory.
+          - "Default value is C(https://letsencrypt.org/certs/isrgrootx1.pem) for the root certificate of Let's Encrypt."
+      acme_certificate_root_certificate_for_verification:
+        type: str
+        description:
+          - The root certificate to use for validating the ceritificate chain if O(acme_certificate_verify_certs=true).
+          - If O(acme_certificate_root_certificate) is set to C(https://letsencrypt.org/certs/trustid-x3-root.pem.txt),
+            this should be set to C(https://letsencrypt.org/certs/isrgrootx1.pem) to avoid validation failure as the
+            TrustID root has by now expired.
+          - By default uses the same value as O(acme_certificate_root_certificate).
+      acme_certificate_deactivate_authzs:
+        type: bool
+        default: true
+        description:
+          - Whether C(authz) objects (authorizations) should be deactivated afterwards.
+          - Set to V(false) to be able to re-use C(authz) objects. This should mostly be used when issuing multiple
+            certificates for the same domain names.
+      acme_certificate_modify_account:
+        type: bool
+        default: true
+        description:
+          - Whether the ACME account should be created (if it doesn't exist) and the contact data (email address)
+            should be updated.
+          - Set to V(false) if you want to use the M(community.crypto.acme_account) module to manage your ACME account
+            (not done by this role).
+      acme_certificate_privatekey_mode:
+        type: str
+        default: '0600'
+        description:
+          - Which file mode to use for the private key file.
+          - Default value is V('0600') (octal string), which means read- and writeable by the owner, but not
+            accessible by anyone else (except possibly C(root)).
+      acme_certificate_select_chain:
+        type: list
+        elements: dict
+        description:
+          - Must be in the format described for the O(community.crypto.acme_certificate#module:select_chain) parameter of
+            M(community.crypto.acme_certificate) module.
+          - Allows to select the certificate chain to be used; O(acme_certificate_root_certificate) must be used in conjunction.
+          - This can be used for example with
+            L(Let's Encrypt,https://community.letsencrypt.org/t/transition-to-isrgs-root-delayed-until-sep-29/125516) to select
+            which root certificate to use. See the documentation for concrete examples how to choose between the Let's Encrypt roots.
+        options:
+          test_certificates:
+            description:
+              - "Determines which certificates in the chain will be tested."
+              - "V(all) tests all certificates in the chain (excluding the leaf, which is
+                 identical in all chains)."
+              - "V(first) only tests the first certificate in the chain, i.e. the one which
+                 signed the leaf."
+              - "V(last) only tests the last certificate in the chain, i.e. the one furthest
+                 away from the leaf. Its issuer is the root certificate of this chain."
+            type: str
+            default: all
+            choices: [first, last, all]
+          issuer:
+            description:
+              - "Allows to specify parts of the issuer of a certificate in the chain must
+                 have to be selected."
+              - "If O(acme_certificate_select_chain[].issuer) is empty, any certificate will match."
+              - 'An example value would be V({"commonName": "My Preferred CA Root"}).'
+            type: dict
+          subject:
+            description:
+              - "Allows to specify parts of the subject of a certificate in the chain must
+                 have to be selected."
+              - "If O(acme_certificate_select_chain[].subject) is empty, any certificate will match."
+              - 'An example value would be V({"CN": "My Preferred CA Intermediate"})'
+            type: dict
+          subject_key_identifier:
+            description:
+              - "Checks for the SubjectKeyIdentifier extension. This is an identifier based
+                 on the private key of the intermediate certificate."
+              - "The identifier must be of the form
+                 V(A8:4A:6A:63:04:7D:DD:BA:E6:D1:39:B7:A6:45:65:EF:F3:A8:EC:A1)."
+            type: str
+          authority_key_identifier:
+            description:
+              - "Checks for the AuthorityKeyIdentifier extension. This is an identifier based
+                 on the private key of the issuer of the intermediate certificate."
+              - "The identifier must be of the form
+                 V(C4:A7:B1:A4:7B:2C:71:FA:DB:E1:4B:90:75:FF:C4:15:60:85:89:10)."
+            type: str
+      acme_certificate_renewal_on_remaining_days:
+        type: int
+        version_added: 0.5.0
+        description:
+          - Only obtain a new certificate if the certificate does not yet exist, or if the certificate's expiry date is less than
+            O(acme_certificate_renewal_on_remaining_days) days in the future.
+      acme_certificate_dns_substitution:
+        type: dict
+        default: {}
+        version_added: 0.6.0
+        description:
+          - Allows to substitute parts of the DNS entry domain names. This can be very useful if
+            certificates are obtained for domain names that are CNAMEs, and the DNS provider for where
+            the CNAME points need to be modified.
+          - The entries in this dictionary should be the names that are to be replaced, and the values
+            the replacements. A single leading wildcard can be used to replace suffixes instead of the complete
+            string, assuming the prefix has no further period (V(.)).
+          - For example, if the key is V(*.example.com) and the value V(*.foo.example.org), the name V(_acme-challenge.example.com)
+            will be replaced by V(*.foo.example.org). If the key is V(*.example.com) and the value V(foo.example.org),
+            the name V(_acme-challenge.example.com) will be replaced by V(foo.example.org). And if the key is V(example.com) and
+            the value V(foo.example.org), V(_acme-challenge.example.com) will not be changed at all, only V(example.com) will be
+            changed to V(foo.example.org).
+          - Note that if you want to obtain certificates with ACME with O(acme_certificate_challenge=dns-01) for V(example.com)
+            whose CNAME is V(foo.example.org), you should create (and provide in this variable) another CNAME record V(*.example.com),
+            or V(_acme-challenge.example.com) if it should be more specialized.
+      acme_certificate_verify_auth:
+        type: bool
+        default: true
+        version_added: 0.6.0
+        description:
+          - Whether to check whether authentication credentials are provided as role arguments for the DNS modules.
+          - When disabled, you can also use module default groups or environment variables to provide these credentials.
+      acme_certificate_verify_certs:
+        type: bool
+        default: true
+        description:
+          - Whether to try to validate the generated certificate chain or not.
+          - Will use O(acme_certificate_root_certificate_for_verification) for the root certificate, or if that is not set,
+            use O(acme_certificate_root_certificate).
+    seealso:
+      - module: community.crypto.openssl_privatekey
+        description: You can create ACME account keys with this module.
+      - module: community.crypto.acme_account
+        description: You can manage ACME accounts with this module.

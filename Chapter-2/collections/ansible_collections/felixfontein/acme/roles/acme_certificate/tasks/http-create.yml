@@ -1,0 +1,29 @@
+---
+# GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2020, Felix Fontein
+
+# Create up challenge files directory on server.
+- name: Creating challenge destination directory
+  ansible.builtin.file:
+    dest: "{{ acme_certificate_server_location }}"
+    state: directory
+    owner: "{{ acme_certificate_http_challenge_user }}"
+    group: "{{ acme_certificate_http_challenge_group }}"
+    mode: "{{ acme_certificate_http_challenge_folder_mode }}"
+  become: "{{ acme_certificate_http_become }}"
+
+# Create challenge files on server.
+- name: "Copying challenge files for {{ ', '.join(acme_certificate_domains + acme_certificate_ips) }}"
+  ansible.builtin.template:
+    dest: >-
+      {{ [
+        acme_certificate_server_location,
+        item.value[acme_certificate_challenge].resource[('.well-known/acme-challenge/' | length):]
+      ] | community.general.path_join }}
+    src: http-challenge.j2
+    owner: "{{ acme_certificate_http_challenge_user }}"
+    group: "{{ acme_certificate_http_challenge_group }}"
+    mode: "{{ acme_certificate_http_challenge_file_mode }}"
+  with_dict: "{{ acme_certificate_INTERNAL_challenge.challenge_data }}"
+  become: "{{ acme_certificate_http_become }}"

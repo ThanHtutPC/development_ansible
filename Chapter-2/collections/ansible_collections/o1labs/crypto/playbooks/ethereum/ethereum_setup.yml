@@ -1,0 +1,52 @@
+---
+- name: Setup kovan openethereum instances
+  hosts: openethereum_rpc_kovan
+  roles:
+    - role: "../../roles/openethereum"
+      vars:
+        chain: kovan
+        exporter_rpc_addr: http://openethereum:8545
+        config:
+          network:
+            allow_ips: all
+
+- name: Setup rinkeby geth instances
+  hosts: geth_rpc_rinkeby
+  roles:
+    - role: "../../roles/geth"
+      vars:
+        chain: rinkeby
+        config:
+          Eth:
+            SyncMode: fast
+
+- name: Setup goerli geth instances
+  hosts: geth_rpc_goerli
+  roles:
+    - role: "../../roles/geth"
+      vars:
+        chain: goerli
+        config:
+          Eth:
+            SyncMode: fast
+
+- name: Setup ropsten geth instances
+  hosts: geth_rpc_ropsten
+  roles:
+    - role: "../../roles/geth"
+      vars:
+        chain: ropsten
+        config:
+          Eth:
+            SyncMode: fast
+
+- name: Setup mainnet geth instances
+  hosts: geth_rpc_mainnet
+  roles:
+    - role: "../../roles/geth"
+      vars:
+        chain: mainnet
+        host_data_dir: /home/ahmad/lab/ethereum/geth/data
+        config:
+          Eth:
+            SyncMode: fast
