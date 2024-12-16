@@ -1,0 +1,11 @@
+---
+- name: create user 
+  hosts: all 
+  gather_facts: false
+  vars_files:
+    - secret.yml 
+  tasks: 
+    - name: create user for ansible
+      ansible.builtin.user:
+        name: "{{ username }}"
+        password: "{{ passhash }}"

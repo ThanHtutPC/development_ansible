@@ -1,0 +1,19 @@
+---
+ansible-navigator:
+  execution-environment:
+    container-engine: podman
+    enabled: true
+    environment-variables:
+      set:
+        ANSIBLE_CONFIG: /home/thanhtut/test/ansible/git_tutorial/Chapter-4/ansiblle.cfg
+    image: registry.redhat.io/ansible-automation-platform-24/ee-supported-rhel8:latest
+    pull:
+      policy: missing
+  format: yaml
+  mode: stdout
+  images:
+    details:
+    - everything
+  playbook-artifact:
+    enable: false 
+    save-as: '{playbook_dir}/{playbook_name}-artifact-{time_stamp}.json'
