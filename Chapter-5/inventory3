@@ -1,0 +1,7 @@
+[cloud-east]
+
+[servers]
+test.lab.example.com
+
+[servers:children]
+cloud-east

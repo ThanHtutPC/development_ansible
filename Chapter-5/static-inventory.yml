@@ -1,0 +1,49 @@
+lb_servers:
+  hosts:
+    proxy.example.com:
+
+web_servers:
+  hosts:
+    web1.example.com:
+    web2.example.com:
+
+backend_server_pool:
+  hosts:
+    appsrv[a:e].example.com:
+
+ungrouped:
+  hosts:
+    notinagroup.example.com:
+
+mailservers:
+  hosts:
+    mail1.example.com:
+
+monitoring:
+  hosts: 
+    watcher.example.com:
+  vars:
+    smtp_reply: smtp.example.com
+
+databases:
+  hosts:
+    maria1.example.com:
+    maria2.example.com: 
+    localhost:
+      ansible_connection: local
+
+webapp: 
+  children:
+    a_web_servers:
+      hosts:
+        backend_a1:
+          ansible_host: serverb.lab.example.com
+    b_web_servers: 
+      hosts: 
+        backend_b1:
+          ansible_host: serverc.lab.example.com
+
+lbapp:
+  hosts:
+    loadbalancer_1:
+      ansible_host: servera.lab.example.com 
