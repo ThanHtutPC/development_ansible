@@ -1,0 +1,14 @@
+---
+- name: gathering 
+  hosts: all 
+  gather_facts: false
+  tasks:
+    - name: Collect only network-related facts
+      ansible.builtin.setup:
+        gather_subset:
+          - network
+      register: facts
+    
+    - name: debug facts
+      ansible.builtin.debug:
+        msg: "{{ facts }}"

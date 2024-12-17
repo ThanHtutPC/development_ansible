@@ -1,0 +1,6 @@
+managed_node: 
+  hosts:
+    rocky1:
+      ansible_user: root 
+      ansible_host: 192.168.122.79
+      ansible_ssh_private_key: ~/.ssh/id_rsa

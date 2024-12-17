@@ -1,0 +1,11 @@
+---
+- name: Deploy the web content on the web servers
+  hosts: rocky1 
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Ensure web content is updated
+      ansible.posix.synchronize:
+        src: web_content/
+        dest: /var/www/html

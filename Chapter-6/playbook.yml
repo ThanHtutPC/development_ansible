@@ -1,0 +1,26 @@
+---
+- name: run playbook
+  hosts: all 
+  gather_facts: false
+  tasks:
+    - name: A normal task
+      ansible.builtin.debug: 
+        msg: 'first task' 
+
+    - name: Another normal task
+      ansible.builtin.debug: 
+        msg: 'second task'
+
+  pre_tasks:
+    - name : run the pre-tasks
+      ansible.builtin.debug: 
+        msg: 'run pre-tasks'
+
+  post_tasks: 
+    - name: run the post-tasks
+      ansible.builtin.debug: 
+        msg: 'run post-tasks'
+
+  roles: 
+    - role: role2 
+

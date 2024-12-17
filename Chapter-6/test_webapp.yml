@@ -1,0 +1,14 @@
+---
+- name: web application smoke test
+  hosts: web_servers
+  gather_facts: false
+  tasks:
+    - name: verify connect of http://localhost
+      ansible.builtin.uri:
+        url: http://localhost
+        return_content: true
+      register: test_url
+      failed_when: "'Hello from' not in test_url['content']"
+      tags: 
+        - tests
+
