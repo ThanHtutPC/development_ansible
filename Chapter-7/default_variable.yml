@@ -1,0 +1,19 @@
+---
+- name: create user
+  hosts: all 
+
+  vars:
+    user_list: 
+      - name: user1
+
+  gather_facts: false
+  tasks:
+    - name: manage user
+      ansible.builtin.user: 
+        name: "{{ item['name'] }}"
+        groups: "{{ item['groups'] | default(omit) }}"
+        system: "{{ item['system'] | default(false) }}"
+        shell: "{{ item['shell'] | default('/bin/bash') }}"
+        state: "{{ item['shell'] | default('present') }}"
+        remove: "{{ item['remove'] | default(false) }}"
+      loop: "{{ user_list }}"

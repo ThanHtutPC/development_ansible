@@ -1,0 +1,28 @@
+---
+- name: testing debug
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: load group information 
+      ansible.builtin.set_fact: 
+        groups_info: "{{ lookup('ansible.builtin.file', 'groups.yml' ) | from_yaml }}"
+
+    - name: debug groups_info 
+      ansible.builtin.debug:
+        msg: |
+          "{{ item.name }}"
+      loop: "{{ groups_info }}"
+    
+    - name: debug users
+      vars:
+        password_hash: "{{ lookup('ansible.builtin.password', 'credentials/' + item + ' length=9') }}"
+      ansible.builtin.debug: 
+        msg: "{{ password_hash }}"
+      loop: "{{ query('ansible.builtin.lines', 'cat users.txt') }}"
+
+    - name: Add user and groups
+      ansible.builtin.debug:
+        msg: | 
+          "{{ item[1] }}"
+          "{{ item[0]['name'] }}"
+      loop: "{{ groups_info | subelements('members', 'skip_missing=true') }}"

@@ -1,0 +1,12 @@
+---
+- name: Default filter examples
+  hosts: rocky1 
+  gather_facts: false
+  tasks:
+    - name: Default filter examples
+      vars:
+        pattern: "some text"
+      ansible.builtin.debug:
+        msg: "{{ item }}"
+      loop:
+        - "{{ pattern | bool | default('match', true) }}"

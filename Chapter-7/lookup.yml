@@ -1,0 +1,18 @@
+---
+- name: Calling lookup plug-ins 
+  hosts: all 
+  gather_facts: false
+  tasks:
+    - name: lookup 
+      ansible.builtin.debug:
+        msg: |
+          "{{ lookup('ansible.builtin.file', '/etc/hosts', '/etc/issue') }}"
+          "{{ query('ansible.builtin.file', '/etc/hosts', '/etc/issue') }}"
+    
+    - name: my yaml
+      ansible.builtin.debug:
+        msg: "{{ lookup('ansible.builtin.file', 'user') | from_yaml }}" 
+
+    - name: line plug-ins
+      ansible.builtin.debug:
+        msg: "{{ query('ansible.builtin.lines', 'cat user') | from_yaml }}"

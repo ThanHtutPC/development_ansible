@@ -1,0 +1,20 @@
+---
+- name: testing
+  hosts: all 
+  gather_facts: false 
+
+  tasks:
+    - name: omit test
+      vars: 
+        apache_optional_packages: []
+        apache_base_packages:
+          - httpd
+          - php
+        apache_sub_packages:
+          - mariadb
+          - php-mysqlnd
+
+      ansible.builtin.debug: 
+        msg: | 
+          "{{ apache_optional_packages | default(omit, true) }}"
+          "{{ apache_base_packages | union(apache_sub_packages) }}"

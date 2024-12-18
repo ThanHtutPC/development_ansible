@@ -1,0 +1,15 @@
+--- 
+- name: testing loop
+  hosts: all 
+  gather_facts: false
+  tasks: 
+    - name: siample  loop
+      vars: 
+        simmple_list: 
+          - user1
+          - user2
+          - user3
+      ansible.builtin.debug:
+        msg: "{{ item }}"
+      loop: "{{ simmple_list }}"
+

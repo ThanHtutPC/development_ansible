@@ -1,0 +1,27 @@
+---
+- name: create user
+  hosts: all 
+  gather_facts: false
+
+  tasks: 
+    - name: multipulating 
+      ansible.builtin.debug:
+        msg: | 
+          "{{ [2, 4, 6, 8, 10, 12] | sum }}"
+    
+    - name: Extracting List Elements 
+      ansible.builtin.assert: 
+        that: 
+          - "{{ [2, 4, 6, 8, 10, 12] | length }} is eq(6)"
+          - "{{ [2, 4, 6, 8, 10, 12] | first}} is eq(2)"
+          - "{{ [2, 4, 6, 8, 10, 12] | last}} is eq(12)"
+    
+    - name: debug for elements
+      ansible.builtin.debug: 
+        msg: "{{ ['Douglas', 'Marvin', 'Arthur'] | random }}"
+
+    - name: Modifing the order of elements 
+      ansible.builtin.assert:
+        that:
+          - "{{ [ 2, 4, 6, 8, 10 ] | reverse }} is eq( [ 10, 8, 6, 4, 2] )"
+          - "{{ [ 4, 8, 10, 6, 2 ] | sort }} is eq( [ 2, 4, 6, 8, 10 ] )"

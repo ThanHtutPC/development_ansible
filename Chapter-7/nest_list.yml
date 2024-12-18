@@ -1,0 +1,19 @@
+---
+- name: nest list 
+  hosts: all
+  vars_files: 
+    - groups.yml
+  gather_facts: false
+
+  tasks: 
+    - name: Output authorized keys for users
+      ansible.builtin.debug:
+        msg: "{{ item.0.name }} has authorized key: {{ item.1 }}"
+      loop: "{{ users | subelements('authorized', skip_missing=True) }}"
+    
+    - name: Set up authorized
+      ansible.builtin.debug:
+        msg: |
+          developer
+          key: "{{ lookup('ansible.builtin.file', item) }}"
+      loop: "{{ public_key_lists | map(attribute='public_keys') | flatten }}"

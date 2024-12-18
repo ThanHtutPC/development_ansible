@@ -1,0 +1,23 @@
+---
+- name: Converting dictionaries
+  hosts: all
+  gather_facts: false
+  tasks:
+
+    - name: converting between dictionaries and lists
+      vars:
+        characters_dict:
+          Douglas: Human
+          Marvin: Robot
+          Arthur: Human
+        characters_items:
+          - key: Douglas
+            value: Human
+          - key: Marvin
+            value: Robot
+          - key: Arthur
+            value: Human
+      ansible.builtin.assert:
+        that:
+          - "{{ characters_dict | dict2items }} is eq( characters_items )"
+          - "{{ characters_items | items2dict }} is eq( characters_dict )"

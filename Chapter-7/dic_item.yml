@@ -1,0 +1,26 @@
+---
+- name: dic to item
+  hosts: all 
+  vars: 
+    users:
+      demo1:
+        name: Demo User 1
+        mail: demo1@example.com
+      demo2:
+        name: Demo User 2
+        mail: demo2@example.com
+      demo200:
+        name: Demo User 200
+        mail: demo200@example.com
+  gather_facts: false
+  tasks:
+    - name: dic to item
+      ansible.builtin.debug:
+        msg: "{{ item['key'] }} {{ item['value']['mail'] }}"
+      with_dict: "{{ users }}"
+
+    - name: dic to item with loop
+      ansible.builtin.debug:
+        msg: "{{ item['key'] }} {{ item['value']['name']  }}"
+      loop: "{{ users | dict2items }}"
+    

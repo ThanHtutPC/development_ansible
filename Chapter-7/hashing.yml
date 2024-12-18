@@ -1,0 +1,20 @@
+---
+- name: hashing
+  hosts: all
+  gather_facts: false
+  tasks: 
+    - name: the string's SHA-1 hash
+      vars:
+        expected: '8bae3f7d0a461488ced07b3e10ab80d018eb1d8c'
+      ansible.builtin.assert:
+        that:
+          - "'{{ 'Arthur' | hash('sha1') }}' is eq( expected )"
+    
+    - name: password hash sha-512
+      ansible.builtin.debug: 
+        msg: "{{ 'secret_password' | password_hash('sha512') }}"
+    
+    - name: Base64 encoding and decoding of values
+      ansible.builtin.assert:
+        that: | 
+          "'{{ 'test' | b64encode }}' is eq('dGVzdA==')"

@@ -1,0 +1,33 @@
+---
+- name: Setup web servers
+  hosts: all
+  become: true
+  vars_files: 
+    - listips.yml
+  gather_facts: false
+  tasks: 
+    - name: filter example
+      ansible.builtin.debug: 
+        msg: "{{ listips | ansible.utils.ipaddr }}"
+
+    - name: filter example 2
+      ansible.builtin.debug: 
+        msg: "{{ listips | ansible.utils.ipaddr | ansible.builtin.ipwrap }}"
+
+    - name: filter example 3
+      ansible.builtin.debug: 
+        msg: | 
+          "{{ '192.0.2.1/24' | ansible.utils.ipaddr('address') }}"
+          "{{ '192.0.2.1/24' | ansible.utils.ipaddr('netmask') }}"
+          "{{ '192.0.2.1/24' | ansible.utils.ipaddr('prefix') }}"
+          "{{ '192.0.2.1/24' | ansible.utils.ipaddr('broadcast') }}"
+          "{{ '192.0.2.1/24' | ansible.utils.ipaddr('network') }}"
+          "{{ '192.0.2.1/24' | ansible.utils.ipaddr('revdns') }}"
+    
+    - name: filter example 4
+      ansible.builtin.debug: 
+        msg: |
+          "{{ '192.168.2.0/24' | ansible.utils.ipaddr(5) }}"
+          "{{ '192.168.2.0/24' | ansible.utils.ipaddr('range_usable') }}"
+          "{{ '192.168.2.0/24' | ansible.utils.network_in_usable('192.168.2.5') }}"
+          "{{ '192.168.2.5/24' | ansible.utils.ipaddr('next_usable') }}"

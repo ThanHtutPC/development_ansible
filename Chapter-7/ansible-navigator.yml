@@ -1,0 +1,20 @@
+ansible-navigator:
+  execution-environment:
+    container-engine: docker
+    enabled: true
+    image: registry.redhat.io/ansible-automation-platform-24/ee-supported-rhel8:latest
+    pull:
+      policy: missing
+  format: yaml
+  images:
+    details:
+    - everything
+  logging:
+    append: true
+    file: /home/thanhtut/test/ansible/git_tutorial/Chapter-7/ansible-navigator.log
+    level: warning
+  mode: stdout
+  playbook-artifact:
+    enable: false 
+    save-as: '{playbook_dir}/{playbook_name}-artifact-{time_stamp}.json'
+

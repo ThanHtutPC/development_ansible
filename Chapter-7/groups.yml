@@ -1,0 +1,39 @@
+public_key_lists:
+  - username: john
+    public_keys: 
+      - pubkeys/john/id_rsa.pub
+      - pubkeys/john/laptop_rsa.pub
+  - username: jane
+    public_keys: 
+      - pubkeys/jane/id_rsa.pub 
+  - username: tom
+    public_keys: 
+      - pubkeys/tom/id_rsa.pub
+
+## Nest_list 
+users:
+  - name: paul
+    password: 12345
+    authorized:
+      - keys/paul_key1.pub
+      - keys/paul_key2.pub
+    mysql:
+      hosts:
+        - "%"
+        - "127.0.0.1"
+        - "::1"
+        - "localhost"
+    groups:
+      - wheel
+
+  - name: john
+    password: 67890
+    authorized:
+      - keys/john_key.pub
+    mysql:
+      password: other-mysql-password
+      hosts:
+         - "utility"
+    groups:
+      - wheel
+      - devops

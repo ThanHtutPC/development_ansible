@@ -1,0 +1,30 @@
+---
+- name: testing map
+  hosts: all 
+
+  vars: 
+    webapp_content_root_dir: /var/www/html
+    webapp_file_list: 
+      - index.html
+
+  gather_facts: false
+
+  tasks: 
+    - name:  map test 
+      ansible.builtin.find:
+        paths: "{{ webapp_content_root_dir }}"
+        recurse: true 
+      register: webapp_find_files
+    
+    - name: debug map
+      ansible.builtin.set_fact:
+        webapp_deployed_files: "{{ webapp_find_files['files'] | map(attribute='path') | list }}"
+      
+    - name: debug find path list
+      ansible.builtin.set_fact:
+        webapp_rel_deployed_files: "{{ webapp_deployed_files | map('relpath', webapp_content_root_dir) | list }}"
+    
+    - name: debug rel deployed
+      ansible.builtin.debug:
+        msg: "{{ webapp_content_root_dir }}/{{ item }}"
+      loop: "{{ webapp_rel_deployed_files | difference(webapp_file_list) }}"
