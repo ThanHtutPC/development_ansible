@@ -1,0 +1,16 @@
+---
+- name: Save server times to workstation
+  hosts: rocky1
+  
+  tasks:
+    - name: server times to workstation 
+      ansible.builtin.lineinfile: 
+        path: /tmp/times.txt
+        state: present
+        mode: '0644'
+        create: true
+        insertafter: EOF
+        line: |
+          {{ ansible_facts['fqdn'] }}
+          {{ '%c' | strftime(ansible_facts['date_time']['epoch']) }}
+      delegate_to: local 

@@ -1,0 +1,21 @@
+---
+- name: delegate task testing 
+  hosts: all
+  gather_facts: false
+  tasks: 
+    - name: get system information 
+      ansible.builtin.command: uname -a 
+      register: managed_host
+    
+    - name: display demo system information 
+      ansible.builtin.debug: 
+        msg: "{{ managed_host }}"
+    
+    - name: get system information 
+      ansible.builtin.command: uname -a 
+      delegate_to: pop-os
+      reigster: localhost
+    
+    - name: display localhost system information 
+      ansible.builtin.debug: 
+        var: localhost
