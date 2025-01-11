@@ -22,6 +22,8 @@ The ansible-navigator collections command to list the collections available in a
 ```sh 
 [user@host ~]$ podman login hub.lab.example.com 
 
+[user@host ~]$ ansible-navigator doc -l --eei hub.lab.example.com/ee-supported-rhel8:latest --pp missing -m stdout
+
 [user@host ~]$ ansible-navigator doc redhat.insights.insights_register --mode stdout
 ```
 
